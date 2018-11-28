@@ -1,0 +1,69 @@
+1. way one
+一: XmlBeanFactory 引用资源
+@deprecated
+    BeanFactory bf = new XmlBeanFactory(new ClassPathResource("beanFactoryTest.xml"));
+    MyTestBean bean = (MyTestBean)bf.getBean("MyTestBean");
+    bean.getTestMethod();
+
+
+2. way two
+2.利用ClassPathXmlApplicationContext，这种方式配置文件应该放在类包同路径下
+二: ClassPathXmlApplicationContext  编译路径
+//一、简单的用ApplicationContext做测试的话,获得Spring中定义的Bean实例(对象).可以用:
+
+//		ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+//		RegisterDAO registerDAO = (RegisterDAO)ac.getBean("RegisterDAO");
+
+//		如果是两个以上:
+//		ApplicationContext ac = new ClassPathXmlApplicationContext(new String[]{"applicationContext.xml","dao.xml"});
+
+//		或者用通配符:
+//		ApplicationContext ac = new ClassPathXmlApplicationContext("classpath:/*.xml");
+
+
+3. way three
+三: 用文件系统的路径
+2.利用FileSystemXmlApplicationContext,这种方法可以将配置文件放在工程的直接目录下
+
+ApplicationContext ct=new FileSystemXmlApplicationContext("applicationContext01.xml");
+ct.getBean("");
+
+4. way four
+四: XmlWebApplicationContext是专为Web工程定制的。
+ServletContext servletContext = request.getSession().getServletContext();
+ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(servletContext );
+
+5. way five
+五: 使用BeanFactory
+BeanDefinitionRegistry reg = new DefaultListableBeanFactory();
+XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(reg);
+reader.loadBeanDefinitions(new ClassPathResource("bean1.xml"));
+reader.loadBeanDefinitions(new ClassPathResource("bean2.xml"));
+BeanFactory bf=(BeanFactory)reg;
+
+
+6. way six
+六：Web 应用启动时加载多个配置文件
+通过ContextLoaderListener 也可加载多个配置文件，在web.xml文件中利用
+<context-pararn>元素来指定多个配置文件位置，其配置如下:
+<context-param>
+    <!-- Context Configuration locations for Spring XML files -->
+       <param-name>contextConfigLocation</param-name>
+         <param-value>
+           ./WEB-INF/**/Appserver-resources.xml,
+           classpath:config/aer/aerContext.xml,
+           classpath:org/codehaus/xfire/spring/xfire.xml,
+           ./WEB-INF/**/*.spring.xml
+         </param-value>
+   </context-param>
+
+
+
+
+
+
+
+
+
+
+
